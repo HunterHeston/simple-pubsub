@@ -70,11 +70,11 @@ class Server {
       res.send(topics);
     });
 
-    ////////////////////////////////////////////////////////////////////////////
     // register new topics
     app.post(Routes.TOPIC_REGISTER, (req, res) => {
       const { topic, clientAddress, clientPort } = req.body;
 
+      // todo parse clientAddress and clientPort.
       if (
         !topic ||
         typeof topic !== "string" ||

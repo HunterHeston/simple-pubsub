@@ -103,8 +103,6 @@ class Receiver {
     // append the callback to the topic list
     topics.get(topic).push(callback);
 
-    // todo send registration to the server.
-
     // topic to register for and where to send the data.
     const postData = JSON.stringify({
       topic: topic,
