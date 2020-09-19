@@ -110,6 +110,7 @@ class Server {
       }
 
       this.topics.get(topic).push({ clientAddress, clientPort });
+      res.status = 200;
       res.send(`registered ${topic}`);
     });
   }
