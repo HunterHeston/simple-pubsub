@@ -73,9 +73,16 @@ class Server {
     ////////////////////////////////////////////////////////////////////////////
     // register new topics
     app.post(Routes.TOPIC_REGISTER, (req, res) => {
-      const { topic } = req.body;
+      const { topic, clientAddress, clientPort } = req.body;
 
-      if (!topic || typeof topic !== "string") {
+      if (
+        !topic ||
+        typeof topic !== "string" ||
+        !clientAddress ||
+        typeof clientAddress !== "string" ||
+        !clientPort ||
+        typeof clientPort !== "number"
+      ) {
         console.error(
           `Server::registerTopic: registration request without topic`
         );
@@ -87,7 +94,22 @@ class Server {
         this.topics.set(topic, []);
       }
 
-      this.topics.get(topic).push({ clientAddress: "localhost", port: 3001 });
+      for (const client of this.topics.get(topic)) {
+        if (
+          clientAddress === client.clientAddress &&
+          clientPort === client.clientPort
+        ) {
+          console.warn(
+            `Server:: topic "${topic}" already registered by: ${clientAddress}:${clientPort}`
+          );
+
+          res.status = 200;
+          res.send(`topic ${topic} already already registered at this address`);
+          return;
+        }
+      }
+
+      this.topics.get(topic).push({ clientAddress, clientPort });
       res.send(`registered ${topic}`);
     });
   }
