@@ -46,21 +46,31 @@ class Server {
       );
     }
 
+    ////////////////////////////////////////////////////////////////////////////
     // home
     app.get(Routes.ROOT, (req, res) => {
-      res.send(`Welcome to pubsub. `);
+      res.send(`Welcome to pubsub.`);
     });
 
     // list all topics
     app.get(Routes.TOPICS_LIST, (req, res) => {
       console.log(
-        `Server:: Request to list topics from ${req.connection.remoteAddress}`,
-        this.topics
+        `Server:: Request to list topics from ${req.connection.remoteAddress}`
       );
 
-      res.send(this.topics);
+      const topics = [];
+      const topicIter = this.topics.keys();
+
+      for (const topic of topicIter) {
+        topics.push(topic);
+      }
+
+      console.log(topics);
+
+      res.send(topics);
     });
 
+    ////////////////////////////////////////////////////////////////////////////
     // register new topics
     app.post(Routes.TOPIC_REGISTER, (req, res) => {
       const { topic } = req.body;
