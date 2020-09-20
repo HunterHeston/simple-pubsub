@@ -1,9 +1,11 @@
 // libraries
 const express = require("express");
-const http = require("http");
 
 // server
 const { ServerRoutes } = require("./server");
+
+// util
+const { sendHttpMessage } = require("./util/sendHttpMessage");
 
 ////////////////////////////////////////////////////////////////////////////////
 /// constants
@@ -110,28 +112,13 @@ class Receiver {
       clientPort: this.port,
     });
 
-    const options = {
-      hostname: this.serverAddress,
-      port: this.serverPort,
-      path: ServerRoutes.TOPIC_REGISTER,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": postData.length,
-      },
-    };
-
-    const request = http.request(options, (res) => {
-      console.log(`Receiver::registerTopic: status code: ${res.statusCode}`);
-      res.on("data", (data) => {
-        console.log(new String(data));
-      });
-    });
-
-    request.on("error", (error) => console.error(error));
-
-    request.write(postData);
-    request.end();
+    sendHttpMessage(
+      this.serverAddress,
+      this.serverPort,
+      ServerRoutes.TOPIC_REGISTER,
+      "POST",
+      postData
+    );
   }
 
   //////////////////////////////////////////////////////////////////////////////
