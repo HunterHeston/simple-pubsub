@@ -1,6 +1,3 @@
-// libraries
-const http = require("http");
-
 // server
 const { ServerRoutes } = require("./server");
 
