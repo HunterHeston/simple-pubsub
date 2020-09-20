@@ -1,6 +1,11 @@
-const { Router } = require("express");
 // includes
 const express = require("express");
+
+// util
+const { sendHttpMessage } = require("./util/sendHttpMessage");
+
+// receiver
+const { ReceiverRoutes } = require("./receiver");
 
 ////////////////////////////////////////////////////////////////////////////////
 /// routes
@@ -145,6 +150,14 @@ class Server {
     for (const client of this.topics.get(topic)) {
       console.log(
         `sending message to: ${client.clientAddress}:${client.clientPort}`
+      );
+
+      sendHttpMessage(
+        client.clientAddress,
+        client.clientPort,
+        ReceiverRoutes.RECEIVE_MESSAGE,
+        "POST",
+        { topic, message }
       );
     }
 

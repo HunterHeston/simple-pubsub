@@ -43,7 +43,7 @@ class Receiver {
   start() {
     // todo this probably needs to be backgrounded?? not sure...
     this.app.listen(this.port, () => {
-      console.log(`Receiver::start: started express app on port: ${port}`);
+      console.log(`Receiver::start: started express app on port: ${this.port}`);
     });
   }
 
@@ -106,18 +106,18 @@ class Receiver {
     topics.get(topic).push(callback);
 
     // topic to register for and where to send the data.
-    const postData = JSON.stringify({
+    const data = {
       topic: topic,
       clientAddress: this.clientAddress,
       clientPort: this.port,
-    });
+    };
 
     sendHttpMessage(
       this.serverAddress,
       this.serverPort,
       ServerRoutes.TOPIC_REGISTER,
       "POST",
-      postData
+      data
     );
   }
 

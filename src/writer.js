@@ -22,7 +22,7 @@ class Writer {
     }
 
     // convert to json
-    const data = JSON.stringify({ topic: topic, message: message });
+    const data = { topic: topic, message: message };
 
     sendHttpMessage(
       this.serverAddress,

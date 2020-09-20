@@ -9,6 +9,10 @@ function sendHttpMessage(address, port, route, method, data) {
     return false;
   }
 
+  console.log(`sendHttpMessage: sending`, data);
+
+  const serializedData = JSON.stringify(data);
+
   const options = {
     hostname: address,
     port: port,
@@ -16,12 +20,12 @@ function sendHttpMessage(address, port, route, method, data) {
     method: method,
     headers: {
       "Content-Type": "application/json",
-      "Content-Length": data.length,
+      "Content-Length": serializedData.length,
     },
   };
 
   const request = http.request(options, (res) => {
-    console.log(`Sender::publish: status code: ${res.statusCode}`);
+    console.log(`sendHttpMessage::publish: status code: ${res.statusCode}`);
     res.on("data", (data) => {
       console.log(new String(data));
     });
@@ -29,7 +33,7 @@ function sendHttpMessage(address, port, route, method, data) {
 
   request.on("error", (error) => console.error(error));
 
-  request.write(data);
+  request.write(serializedData);
   request.end();
 
   return true;
