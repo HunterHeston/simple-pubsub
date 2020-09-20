@@ -128,7 +128,7 @@ class Server {
       }
 
       res.status = 400;
-      res.send(`Topic not registered or not provided ${topic}`);
+      res.send(`Topic not registered or not provided: ${topic}`);
       return;
     });
   }
@@ -147,6 +147,7 @@ class Server {
         `sending message to: ${client.clientAddress}:${client.clientPort}`
       );
     }
+
     return true;
   }
 
