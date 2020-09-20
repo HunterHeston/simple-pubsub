@@ -1,3 +1,4 @@
+const { Router } = require("express");
 // includes
 const express = require("express");
 
@@ -9,6 +10,7 @@ const Routes = {
   TOPICS: "/topics",
   TOPICS_LIST: "/topics/list",
   TOPIC_REGISTER: "/topics/register",
+  TOPIC_PUBLISH: "/topics/publish",
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,7 +48,6 @@ class Server {
       );
     }
 
-    ////////////////////////////////////////////////////////////////////////////
     // home
     app.get(Routes.ROOT, (req, res) => {
       res.send(`Welcome to pubsub.`);
@@ -113,6 +114,41 @@ class Server {
       res.status = 200;
       res.send(`registered ${topic}`);
     });
+
+    // process incoming messages
+    app.post(Routes.TOPIC_PUBLISH, (req, res) => {
+      const { topic, message } = req.body;
+
+      console.log(req.body);
+
+      if (this.routeMessage(topic, message)) {
+        res.status = 200;
+        res.send(`Message send on topic ${topic}`);
+        return;
+      }
+
+      // 500 ??
+      res.status = 500;
+      res.send(`Failed to sent message on topic ${topic}`);
+      return;
+    });
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// Route published messages
+  //////////////////////////////////////////////////////////////////////////////
+  routeMessage(topic, message) {
+    console.log(topic, message);
+    if (!topic) {
+      return false;
+    }
+
+    // for (const client of this.topics.get(topic)) {
+    //   console.log(
+    //     `sending message to: ${client.clientAddress}:${client.clientPort}`
+    //   );
+    // }
+    return true;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -128,7 +164,7 @@ class Server {
 
     app.use(express.json());
   }
-}
+} // server
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Exports
