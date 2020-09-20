@@ -127,9 +127,8 @@ class Server {
         return;
       }
 
-      // 500 ??
-      res.status = 500;
-      res.send(`Failed to sent message on topic ${topic}`);
+      res.status = 400;
+      res.send(`Topic not registered or not provided ${topic}`);
       return;
     });
   }
@@ -139,15 +138,15 @@ class Server {
   //////////////////////////////////////////////////////////////////////////////
   routeMessage(topic, message) {
     console.log(topic, message);
-    if (!topic) {
+    if (!topic || !this.topics.has(topic)) {
       return false;
     }
 
-    // for (const client of this.topics.get(topic)) {
-    //   console.log(
-    //     `sending message to: ${client.clientAddress}:${client.clientPort}`
-    //   );
-    // }
+    for (const client of this.topics.get(topic)) {
+      console.log(
+        `sending message to: ${client.clientAddress}:${client.clientPort}`
+      );
+    }
     return true;
   }
 
