@@ -147,6 +147,8 @@ class Server {
       return false;
     }
 
+    const data = { topic: topic, message: message };
+
     for (const client of this.topics.get(topic)) {
       console.log(
         `sending message to: ${client.clientAddress}:${client.clientPort}`
@@ -157,7 +159,7 @@ class Server {
         client.clientPort,
         ReceiverRoutes.RECEIVE_MESSAGE,
         "POST",
-        { topic, message }
+        data
       );
     }
 

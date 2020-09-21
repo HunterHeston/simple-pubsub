@@ -27,6 +27,7 @@ class Receiver {
     this.clientAddress = "localhost";
     this.port = receiverPort;
     this.app = express();
+    this.registerMiddleware(this.app);
     this.registerRoutes(this.app);
 
     // message processing server configuration
@@ -41,7 +42,6 @@ class Receiver {
   /// start listening to for messages from the server
   //////////////////////////////////////////////////////////////////////////////
   start() {
-    // todo this probably needs to be backgrounded?? not sure...
     this.app.listen(this.port, () => {
       console.log(`Receiver::start: started express app on port: ${this.port}`);
     });
@@ -68,13 +68,24 @@ class Receiver {
     // todo add ready flag?
 
     // handles successful or failed topic registrations
-    this.app.post(
-      Routes.RECEIVE_REGISTRATION,
-      this.processRegistrationResponse
-    );
+    app.post(Routes.RECEIVE_REGISTRATION, this.processRegistrationResponse);
 
     // handles incoming messages
-    this.app.post(Routes.RECEIVE_MESSAGE, this.processMessage);
+    app.post(Routes.RECEIVE_MESSAGE, (req, res) => {
+      const { topic, message } = req.body;
+
+      console.log(req.body);
+
+      if (this.processMessage(topic, message)) {
+        res.status = 200;
+        res.send(`Receiver: Message received on topic ${topic}`);
+        return;
+      }
+
+      res.status = 400;
+      res.send(`Topic not registered or not provided: ${topic}`);
+      return;
+    });
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -144,21 +155,16 @@ class Receiver {
   //////////////////////////////////////////////////////////////////////////////
   /// receive message
   //////////////////////////////////////////////////////////////////////////////
-  processMessage(req, res) {
-    if (!req || !req.body || !req.body.topic) {
-      console.warn(
-        "processMessage: Message received from server without topic... ignoring"
-      );
-      return;
+  processMessage(topic, message) {
+    console.log(`processMessage: Message: ${topic}, with message: `, message);
+
+    if (!topic) {
+      return false;
     }
 
-    const { topic, message } = req.body;
-    console.log(`processMessage: Message: ${topic}, with message: ${message}`);
-
-    res.code = 200;
-    res.send();
+    return true;
   }
-}
+} // Receiver
 
 ////////////////////////////////////////////////////////////////////////////////
 /// exports
