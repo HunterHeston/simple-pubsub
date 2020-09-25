@@ -99,10 +99,12 @@ class Server {
         );
       }
 
+      // topic does not exist yet.
       if (!this.topics.has(topic)) {
         this.topics.set(topic, []);
       }
 
+      // if this client has registered for this topic already this do not register them again
       for (const client of this.topics.get(topic)) {
         if (
           clientAddress === client.clientAddress &&
@@ -118,6 +120,11 @@ class Server {
         }
       }
 
+      LOG_INFO(
+        `Server::registerTopic: new client ${clientAddress}:${clientPort} registered for topic ${topic}`
+      );
+
+      // add this new client to the list of subscribers
       this.topics.get(topic).push({ clientAddress, clientPort });
       res.status = 200;
       res.send(`registered ${topic}`);
