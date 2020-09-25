@@ -1,17 +1,18 @@
 // local
-const { Receiver } = require("../receiver");
-const { LOG_INFO, LOG_WARN, LOG_ERROR } = require("../util/log");
+const { Writer } = require("../writer");
+const { LOG_INFO } = require("../util/log");
 
 // debug and higher
 process.env.log_level = 1;
 
+////////////////////////////////////////////////////////////////////////////////
+/// parse command-line args and call run
 ////////////////////////////////////////////////////////////////////////////////
 function main() {
   // ignore the first 2 arguments
   const args = process.argv.slice(2);
 
   // default to reasonable values
-  let port = 3001;
   let serverAddress = "localhost";
   let serverPort = 3000;
 
@@ -21,11 +22,6 @@ function main() {
     const [command, value] = arg.split("=");
 
     switch (command) {
-      case "--port":
-      case "-p":
-        port = parseInt(value);
-        break;
-
       case "--server-address":
       case "-s":
         serverAddress = value;
@@ -39,7 +35,7 @@ function main() {
       case "--help":
       case "-h":
         LOG_INFO(
-          `main: accepted arguments: --port=<port> -p=<port> --server-address=<ip of server> -s=<ip of server> --server-port-<server-port> -sp=<server-port>`
+          `main: accepted arguments: --server-address=<ip of server> -s=<ip of server> --server-port-<server-port> -sp=<server-port>`
         );
 
         //* is help is requested we should not proceed with execution.
@@ -53,34 +49,29 @@ function main() {
     }
   }
 
-  run(port, serverAddress, serverPort);
+  run(serverAddress, serverPort);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-function run(port, serverAddress, serverPort) {
-  const receiver = new Receiver(port, serverAddress, serverPort);
+/// instantiate a writer and send messages to the server
+////////////////////////////////////////////////////////////////////////////////
+function run(serverAddress, serverPort) {
+  const writer = new Writer(serverAddress, serverPort);
 
-  receiver.registerTopic("ping", (message) => {
-    LOG_INFO(`run: received message on simple-topic`);
-    LOG_INFO(message);
-  });
-  receiver.registerTopic("one-second", (message) => {
-    LOG_ERROR(`run: received message on one-second`);
-    LOG_INFO(message);
-  });
-  receiver.registerTopic("like", (message) => {
-    LOG_INFO(`run: received message on like`);
-    LOG_INFO(message);
-  });
-  receiver.registerTopic("data", (message) => {
-    LOG_INFO(`run: received message on data`);
-    LOG_INFO(message);
-  });
+  setInterval(() => {
+    writer.sendMessage("ping", {
+      text: "I am pinging the server",
+    });
+  }, 10);
 
-  receiver.start();
+  setInterval(() => {
+    writer.sendMessage("one-second", {
+      text: "I am pinging the server",
+    });
+  }, 1000);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// start the main function
+/// execute main
 ////////////////////////////////////////////////////////////////////////////////
 main();
