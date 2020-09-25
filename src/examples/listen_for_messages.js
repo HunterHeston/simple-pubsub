@@ -4,6 +4,7 @@ const { LOG_INFO, LOG_WARN } = require("../util/log");
 
 ////////////////////////////////////////////////////////////////////////////////
 function main() {
+  // ignore the first 2 arguments
   const args = process.argv.slice(2);
 
   // default to reasonable values
@@ -56,8 +57,20 @@ function main() {
 function run(port, serverAddress, serverPort) {
   const receiver = new Receiver(port, serverAddress, serverPort);
 
-  receiver.registerTopic("simple-ping", (message) => {
+  receiver.registerTopic("ping", (message) => {
     LOG_INFO(`run: received message on simple-topic`);
+    LOG_INFO(message);
+  });
+  receiver.registerTopic("location", (message) => {
+    LOG_INFO(`run: received message on location`);
+    LOG_INFO(message);
+  });
+  receiver.registerTopic("like", (message) => {
+    LOG_INFO(`run: received message on like`);
+    LOG_INFO(message);
+  });
+  receiver.registerTopic("data", (message) => {
+    LOG_INFO(`run: received message on data`);
     LOG_INFO(message);
   });
 
