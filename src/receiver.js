@@ -1,5 +1,6 @@
 // libraries
 const express = require("express");
+const v8 = require("v8");
 
 // server
 const { ServerRoutes } = require("./server");
@@ -159,8 +160,15 @@ class Receiver {
     console.log(`processMessage: Message: ${topic}, with message: `, message);
 
     if (!topic) {
+      console.error(`processMessage: received message without topic.`);
       return false;
     }
+
+    const callbacks = this.topics.get(topic);
+
+    callbacks.forEach((callback) => {
+      callback(v8.deserialize(v8.serialize(message)));
+    });
 
     return true;
   }
