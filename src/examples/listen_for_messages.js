@@ -65,7 +65,7 @@ function run(port, serverAddress, serverPort) {
     LOG_INFO(message);
   });
   receiver.registerTopic("one-second", (message) => {
-    LOG_ERROR(`run: received message on one-second`);
+    LOG_INFO(`run: received message on one-second`);
     LOG_INFO(message);
   });
   receiver.registerTopic("like", (message) => {
