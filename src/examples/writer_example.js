@@ -62,7 +62,7 @@ function run(serverAddress, serverPort) {
     writer.sendMessage("ping", {
       text: "I am pinging the server",
     });
-  }, 10);
+  }, 100);
 
   setInterval(() => {
     writer.sendMessage("one-second", {
