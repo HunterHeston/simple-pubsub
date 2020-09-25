@@ -30,7 +30,6 @@ class Receiver {
     );
 
     // express setup
-    this.clientAddress = "localhost";
     this.port = receiverPort;
     this.app = express();
     this.registerMiddleware(this.app);
@@ -125,7 +124,6 @@ class Receiver {
     // topic to register for and where to send the data.
     const data = {
       topic: topic,
-      clientAddress: this.clientAddress,
       clientPort: this.port,
     };
 

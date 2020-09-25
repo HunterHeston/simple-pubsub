@@ -79,7 +79,8 @@ class Server {
 
     // register new topics
     app.post(Routes.TOPIC_REGISTER, (req, res) => {
-      const { topic, clientAddress, clientPort } = req.body;
+      const { topic, clientPort } = req.body;
+      const clientAddress = req.connection.remoteAddress;
 
       // todo parse clientAddress and clientPort.
       if (
