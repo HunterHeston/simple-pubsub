@@ -35,6 +35,8 @@ function getTimeString() {
   return `[${day}/${month}/${date.getFullYear()} ${hour}:${minute}:${seconds}:${date.getMilliseconds()}]`;
 }
 
+// TODO: all log functions should be variadic
+
 ////////////////////////////////////////////////////////////////////////////////
 /// TRACE level logging
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +45,7 @@ function LOG_TRACE(logMessage) {
     return;
   }
 
-  console.debug(getTimeString(), logMessage);
+  console.debug(getTimeString(), "TRACE", logMessage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +56,7 @@ function LOG_DEBUG(logMessage) {
     return;
   }
 
-  console.debug(getTimeString(), logMessage);
+  console.debug(getTimeString(), "DEBUG", logMessage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +67,7 @@ function LOG_INFO(logMessage) {
     return;
   }
 
-  console.info(getTimeString(), logMessage);
+  console.info(getTimeString(), "INFO", logMessage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +78,7 @@ function LOG_WARN(logMessage) {
     return;
   }
 
-  console.warn(getTimeString(), logMessage);
+  console.warn(getTimeString(), "WARN", logMessage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +89,7 @@ function LOG_ERROR(logMessage) {
     return;
   }
 
-  console.error(getTimeString(), logMessage);
+  console.error(getTimeString(), "ERROR", logMessage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +100,7 @@ function LOG_FATAL(logMessage) {
     return;
   }
 
-  console.error(getTimeString(), logMessage);
+  console.error(getTimeString(), "FATAL", logMessage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
