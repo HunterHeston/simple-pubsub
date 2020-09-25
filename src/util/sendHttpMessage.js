@@ -32,7 +32,6 @@ function sendHttpMessage(address, port, route, method, data) {
   });
 
   request.on("error", (error) => console.error(error));
-
   request.write(serializedData);
   request.end();
 
