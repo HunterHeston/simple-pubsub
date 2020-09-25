@@ -6,9 +6,9 @@ const LOG_LEVELS = {
   DEBUG: 1,
   INFO: 2,
   WARN: 3,
-  ERROR: 5,
-  FATAL: 6,
-  DISABLED: 7,
+  ERROR: 4,
+  FATAL: 5,
+  DISABLED: 6,
 };
 
 ////////////////////////////////////////////////////////////////////////////////
