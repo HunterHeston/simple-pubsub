@@ -7,6 +7,7 @@ const { ServerRoutes } = require("./server");
 
 // util
 const { sendHttpMessage } = require("./util/sendHttpMessage");
+const { LOG_INFO, LOG_ERROR, LOG_DEBUG, LOG_WARN } = require("./util/log");
 
 ////////////////////////////////////////////////////////////////////////////////
 /// constants
@@ -24,6 +25,10 @@ const Routes = {
 ////////////////////////////////////////////////////////////////////////////////
 class Receiver {
   constructor(receiverPort, serverAddress, serverPort) {
+    LOG_INFO(
+      `Receiver::constructor: receiverPort: ${receiverPort}, serverAddress: ${serverAddress}, serverPort: ${serverPort}`
+    );
+
     // express setup
     this.clientAddress = "localhost";
     this.port = receiverPort;
@@ -44,7 +49,7 @@ class Receiver {
   //////////////////////////////////////////////////////////////////////////////
   start() {
     this.app.listen(this.port, () => {
-      console.log(`Receiver::start: started express app on port: ${this.port}`);
+      LOG_INFO(`Receiver::start: started express app on port: ${this.port}`);
     });
   }
 
@@ -60,7 +65,7 @@ class Receiver {
   //////////////////////////////////////////////////////////////////////////////
   registerRoutes(app) {
     if (!app) {
-      console.error("registerRoutes: express app not provided");
+      LOG_ERROR("registerRoutes: express app not provided");
       throw new Error(
         "registerRoutes: app initialization failed, app not provided"
       );
@@ -75,7 +80,7 @@ class Receiver {
     app.post(Routes.RECEIVE_MESSAGE, (req, res) => {
       const { topic, message } = req.body;
 
-      console.log(req.body);
+      LOG_DEBUG(req.body);
 
       if (this.processMessage(topic, message)) {
         res.status = 200;
@@ -94,7 +99,7 @@ class Receiver {
   //////////////////////////////////////////////////////////////////////////////
   registerMiddleware(app) {
     if (!app) {
-      console.error("registerMiddleware: express app not provided");
+      LOG_ERROR("registerMiddleware: express app not provided");
       throw new Error(
         "registerMiddleware: app initialization failed, app not provided"
       );
@@ -138,14 +143,14 @@ class Receiver {
   //////////////////////////////////////////////////////////////////////////////
   processRegistrationResponse(req, res) {
     if (!req || !req.body || !req.body.topic) {
-      console.warn(
+      LOG_WARN(
         "processRegistrationResponse: Received registration response without topic"
       );
       return;
     }
 
     const { topic } = req.body;
-    console.log(
+    LOG_DEBUG(
       `processRegistrationResponse:  Message topic: ${topic}, with message: ${message}`
     );
 
@@ -157,10 +162,10 @@ class Receiver {
   /// receive message
   //////////////////////////////////////////////////////////////////////////////
   processMessage(topic, message) {
-    console.log(`processMessage: Message: ${topic}, with message: `, message);
+    LOG_DEBUG(`processMessage: Message: ${topic}, with message: `, message);
 
     if (!topic) {
-      console.error(`processMessage: received message without topic.`);
+      LOG_ERROR(`processMessage: received message without topic.`);
       return false;
     }
 

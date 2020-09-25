@@ -1,15 +1,16 @@
 const http = require("http");
+const { LOG_DEBUG, LOG_ERROR } = require("./log");
 
 ////////////////////////////////////////////////////////////////////////////////
 /// helper message for sending http requests
 ////////////////////////////////////////////////////////////////////////////////
 function sendHttpMessage(address, port, route, method, data) {
   if (!address || !port || !route || !method || !data) {
-    console.error(`sendHttpMessage: invalid input provided`);
+    LOG_ERROR(`sendHttpMessage: invalid input provided`);
     return false;
   }
 
-  console.log(`sendHttpMessage: sending`, data);
+  LOG_DEBUG(`sendHttpMessage: sending`, data);
 
   const serializedData = JSON.stringify(data);
 
@@ -25,13 +26,13 @@ function sendHttpMessage(address, port, route, method, data) {
   };
 
   const request = http.request(options, (res) => {
-    console.log(`sendHttpMessage::publish: status code: ${res.statusCode}`);
+    LOG_DEBUG(`sendHttpMessage::publish: status code: ${res.statusCode}`);
     res.on("data", (data) => {
-      console.log(new String(data));
+      LOG_DEBUG(new String(data));
     });
   });
 
-  request.on("error", (error) => console.error(error));
+  request.on("error", (error) => LOG_ERROR(error));
   request.write(serializedData);
   request.end();
 

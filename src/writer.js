@@ -1,5 +1,6 @@
 // server
 const { ServerRoutes } = require("./server");
+const { LOG_ERROR } = require("./util/log");
 
 // util
 const { sendHttpMessage } = require("./util/sendHttpMessage");
@@ -27,7 +28,7 @@ class Writer {
   //////////////////////////////////////////////////////////////////////////////
   sendMessage(topic, message) {
     if (!topic || typeof topic !== "string") {
-      console.error(
+      LOG_ERROR(
         "Writer::sendMessage: topic not provided, message will not be sent."
       );
       return false;

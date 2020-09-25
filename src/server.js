@@ -6,6 +6,7 @@ const { sendHttpMessage } = require("./util/sendHttpMessage");
 
 // receiver
 const { ReceiverRoutes } = require("./receiver");
+const { LOG_INFO, LOG_ERROR, LOG_DEBUG, LOG_WARN } = require("./util/log");
 
 ////////////////////////////////////////////////////////////////////////////////
 /// express routes
@@ -38,7 +39,7 @@ class Server {
   //////////////////////////////////////////////////////////////////////////////
   start() {
     this.app.listen(this.port, () => {
-      console.log(`Server: started express app on port: ${this.port}`);
+      LOG_INFO(`Server: started express app on port: ${this.port}`);
     });
   }
 
@@ -47,7 +48,7 @@ class Server {
   //////////////////////////////////////////////////////////////////////////////
   registerRoutes(app) {
     if (!app) {
-      console.error("registerRoutes: express app not provided");
+      LOG_ERROR("registerRoutes: express app not provided");
       throw new Error(
         "registerRoutes: app initialization failed, app not provided"
       );
@@ -60,7 +61,7 @@ class Server {
 
     // list all topics
     app.get(Routes.TOPICS_LIST, (req, res) => {
-      console.log(
+      LOG_DEBUG(
         `Server:: Request to list topics from ${req.connection.remoteAddress}`
       );
 
@@ -71,7 +72,7 @@ class Server {
         topics.push(topic);
       }
 
-      console.log(topics);
+      LOG_DEBUG(topics);
 
       res.send(topics);
     });
@@ -89,11 +90,13 @@ class Server {
         !clientPort ||
         typeof clientPort !== "number"
       ) {
-        console.error(
-          `Server::registerTopic: registration request without topic`
+        LOG_ERROR(
+          `Server::registerTopic: registration request without topic, clientAddress or clientPort`
         );
         res.code = 300;
-        res.send("no topic provided");
+        res.send(
+          "registration request without topic, clientAddress or clientPort"
+        );
       }
 
       if (!this.topics.has(topic)) {
@@ -105,7 +108,7 @@ class Server {
           clientAddress === client.clientAddress &&
           clientPort === client.clientPort
         ) {
-          console.warn(
+          LOG_WARN(
             `Server:: topic "${topic}" already registered by: ${clientAddress}:${clientPort}`
           );
 
@@ -124,7 +127,7 @@ class Server {
     app.post(Routes.TOPIC_PUBLISH, (req, res) => {
       const { topic, message } = req.body;
 
-      console.log(req.body);
+      LOG_DEBUG(req.body);
 
       if (this.routeMessage(topic, message)) {
         res.status = 200;
@@ -142,7 +145,7 @@ class Server {
   /// Route published messages
   //////////////////////////////////////////////////////////////////////////////
   routeMessage(topic, message) {
-    console.log(topic, message);
+    LOG_DEBUG(topic, message);
     if (!topic || !this.topics.has(topic)) {
       return false;
     }
@@ -150,7 +153,7 @@ class Server {
     const data = { topic: topic, message: message };
 
     for (const client of this.topics.get(topic)) {
-      console.log(
+      LOG_DEBUG(
         `sending message to: ${client.clientAddress}:${client.clientPort}`
       );
 
@@ -171,7 +174,7 @@ class Server {
   //////////////////////////////////////////////////////////////////////////////
   registerMiddleware(app) {
     if (!app) {
-      console.error("registerMiddleware: express app not provided");
+      LOG_ERROR("registerMiddleware: express app not provided");
       throw new Error(
         "registerMiddleware: app initialization failed, app not provided"
       );
