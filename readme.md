@@ -4,7 +4,7 @@ Simple pubsub provides a topic based publish subscribe framework built on top of
 
 
 ## About
-This repo contains the source for three objects.
+This repo contains the source for three Classes.
 * Server
 * Receiver
 * Writer
